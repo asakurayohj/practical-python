@@ -6,17 +6,20 @@ import csv
 
 
 def portfolio_cost(filename):
-    cost = 0
+    total_cost = 0
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
-        for line in rows:
+        headers = next(rows)
+        for rowno, row in enumerate(rows, start=1):
+            record = dict(zip(headers, row))
             try:
-                [_, share, price] = line
-                cost = cost + int(share) * float(price)
+                shares = int(record['shares'])
+                price = float(record['price'])
+                total_cost = total_cost + shares * price
             except ValueError:
-                print("Couldn't parse", line)
+                print(f"Row {rowno}: Couldn't convert: {row}")
 
-    return cost
+    return total_cost
 
 
 if len(sys.argv) == 2:
